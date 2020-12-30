@@ -917,6 +917,18 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
+"@boostercloud/elastic-filesystem-aws-infrastructure@^0.9.4-alpha.6+f39e4b6":
+  version "0.9.4-alpha.6"
+  resolved "http://localhost:4873/@boostercloud%2felastic-filesystem-aws-infrastructure/-/elastic-filesystem-aws-infrastructure-0.9.4-alpha.6.tgz#9d2f4a886a2c9d415440796724882118a1d62b1f"
+  integrity sha512-8s9cuzmOkpiNJFm2/7NzS7xB6a98KlIw9OxTtYR69hEHu/CZAo6yw1oGi8kxV6+sCddYHVuoRQX1CU+wJfik9g==
+  dependencies:
+    "@aws-cdk/aws-ec2" "1.67.0"
+    "@aws-cdk/aws-efs" "1.67.0"
+    "@aws-cdk/aws-iam" "1.67.0"
+    "@aws-cdk/aws-lambda" "1.67.0"
+    "@boostercloud/framework-types" "^0.9.3"
+    aws-cdk "1.67.0"
+
 "@evocateur/libnpmaccess@^3.1.2":
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/@evocateur/libnpmaccess/-/libnpmaccess-3.1.2.tgz#ecf7f6ce6b004e9f942b098d92200be4a4b1c845"

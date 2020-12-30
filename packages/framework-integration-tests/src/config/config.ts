@@ -27,5 +27,12 @@ Booster.configure('production', (config: BoosterConfig): void => {
   config.env['BOOSTER_APP_SUFFIX'] = appNameSuffix
 
   config.appName = 'my-store-' + appNameSuffix
-  config.provider = AWS.Provider()
+  config.provider = AWS.Provider([
+    {
+      packageName: '@boostercloud/elastic-filesystem-aws-infrastructure', 
+      parameters: {
+        fileSystemName: 'myFileSystemName', // Required
+      }
+    }
+  ])
 })
