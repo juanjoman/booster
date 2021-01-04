@@ -13,13 +13,13 @@
     "@boostercloud/framework-core": "^0.9.3",
     "@boostercloud/framework-provider-aws": "^0.9.3",
     "@boostercloud/framework-provider-local": "^0.9.3",
+    "@boostercloud/framework-provider-aws-infrastructure": "^0.9.11",
+    "@boostercloud/framework-provider-local-infrastructure": "^0.9.3",
+    "@boostercloud/rocket-elastic-filesystem-aws-infrastructure": "0.9.54",
     "@boostercloud/framework-types": "^0.9.3",
     "tslib": "^2.0.3"
   },
   "devDependencies": {
-    "@boostercloud/framework-provider-aws-infrastructure": "^0.9.3",
-    "@boostercloud/framework-provider-local-infrastructure": "^0.9.3",
-    "@boostercloud/rocket-elastic-filesystem-aws-infrastructure": "^0.9.4-alpha.6+f39e4b6",
     "@types/aws-lambda": "^8.10.48",
     "@types/faker": "^4.1.12",
     "@types/ws": "^7.2.4",

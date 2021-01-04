@@ -29,7 +29,7 @@ Booster.configure('production', (config: BoosterConfig): void => {
   config.appName = 'my-store-' + appNameSuffix
   config.provider = AWS.Provider([
     {
-      packageName: '@boostercloud/elastic-filesystem-aws-infrastructure', 
+      packageName: '@boostercloud/rocket-elastic-filesystem-aws-infrastructure', 
       parameters: {
         fileSystemName: 'myFileSystemName', // Required
       }

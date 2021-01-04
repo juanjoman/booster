@@ -1,6 +1,6 @@
 {
   "name": "@boostercloud/rocket-elastic-filesystem-aws-infrastructure",
-  "version": "0.9.3",
+  "version": "0.9.55",
   "description": "Connects a file system to your Booster Framework application.",
   "keywords": [
     "Booster",
@@ -23,17 +23,20 @@
     "url": "git+https://github.com/boostercloud/booster.git"
   },
   "dependencies": {
-    "@aws-cdk/aws-efs": "1.67.0",
     "@aws-cdk/aws-ec2": "1.67.0",
-    "@aws-cdk/aws-lambda": "1.67.0",
+    "@aws-cdk/aws-efs": "1.67.0",
     "@aws-cdk/aws-iam": "1.67.0",
+    "@aws-cdk/aws-lambda": "1.67.0",
     "@boostercloud/framework-types": "^0.9.3",
-    "aws-cdk": "1.67.0"
+    "@boostercloud/cli": "0.9.3",
+    "aws-cdk": "1.67.0",
+    "zip-local": "0.3.4"
   },
   "scripts": {
     "lint": "eslint --ext '.js,.ts' **/*.ts",
     "fix-lint": "eslint --quiet --fix --ext '.js,.ts' **/*.ts",
     "compile": "tsc -b tsconfig.json",
+    "postcompile": "cp -R src/lambda/node_modules dist/lambda",
     "clean": "rimraf ./dist tsconfig.tsbuildinfo",
     "prepack": "tsc -b tsconfig.json",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""

@@ -1,0 +1,2 @@
+!src/lambda/node_modules
+!src/lambda/node_modules/child-process-promise/**/*

@@ -1,0 +1,20 @@
+{
+  "name": "efs-lambda",
+  "version": "0.0.2",
+  "description": "A lambda connected to a persistent filesystem",
+  "main": "index.js",
+  "author": "JJ",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "child-process-promise": "^2.2.1"
+  },
+  "scripts": {
+    "lint": "eslint --ext '.js,.ts' **/*.ts",
+    "fix-lint": "eslint --quiet --fix --ext '.js,.ts' **/*.ts",
+    "compile": "tsc -b tsconfig.json",
+    "clean": "rimraf ./dist tsconfig.tsbuildinfo",
+    "prepack": "tsc -b tsconfig.json",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
+  }
+}

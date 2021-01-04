@@ -3,6 +3,9 @@ import { RocketUtils } from '@boostercloud/framework-provider-aws-infrastructure
 import { FileSystem, AccessPoint, LifecyclePolicy, ThroughputMode } from '@aws-cdk/aws-efs'
 import { Vpc } from '@aws-cdk/aws-ec2'
 import * as lambda from '@aws-cdk/aws-lambda'
+import { ManagedPolicy, Role, ServicePrincipal } from '@aws-cdk/aws-iam'
+import * as path from 'path'
+const zipper = require('zip-local')
 
 export type AWSElasticFilesystemParams = {
   fileSystemName: string
@@ -24,19 +27,42 @@ export class ElasticFileSystemStack {
       throughputMode: ThroughputMode.BURSTING,
       removalPolicy: RemovalPolicy.DESTROY,
     })
-
     const accessPoint = new AccessPoint(stack, 'ElasticFileSystem-AccessPoint', {
       fileSystem,
-      path: params.path ?? '/efs',
+      path: params.path ?? '/mnt/efs',
+      createAcl: {
+        ownerUid: '1001',
+        ownerGid: '1001',
+        permissions: '777'
+      },
+      posixUser: {
+        uid: '1001',
+        gid: '1001'
+      }
     })
+    console.log("////////////// 4. MOUNT STACK //////////////")
+    console.log(__dirname)
+    console.log(path.join(__dirname, 'lambda'))
+    const functionPath = path.join(__dirname, 'lambda')
+    const zipPath = `${functionPath}/lambda.zip`
+    console.log(zipPath)
+    zipper.sync.zip(functionPath).compress().save(zipPath)  
+    
+    const lambdaRole = new Role(stack, 'ElasticFileSystemLambdaRole', {
+      assumedBy: new ServicePrincipal('lambda.amazonaws.com')
+    })
+    lambdaRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AmazonElasticFileSystemClientFullAccess'))
+    lambdaRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaVPCAccessExecutionRole'))
 
     new lambda.Function(stack, 'ElasticFileSystemLambda', {
-      handler: 'elastic-file-system-lambda.handler',
-      code: lambda.Code.fromAsset('./elastic-filesystem-lambda.ts'),
+      handler: 'index.handler',
+      code: lambda.Code.fromAsset(zipPath),
       runtime: lambda.Runtime.NODEJS_12_X,
-      filesystem: lambda.FileSystem.fromEfsAccessPoint(accessPoint, '/efs'),
+      filesystem: lambda.FileSystem.fromEfsAccessPoint(accessPoint, '/mnt/efs'),
       vpc,
+      role: lambdaRole
     })
+    console.log("////////////// 5. MOUNT STACK //////////////")
   }
 
   public static async unmountStack(params: AWSElasticFilesystemParams, utils: RocketUtils): Promise<void> {

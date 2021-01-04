@@ -35,9 +35,10 @@ export class ApplicationStackBuilder {
     const eventsStack = new EventsStack(this.config, stack, apis).build()
 
     setupPermissions(graphQLStack, eventsStack, readModelTables, websocketAPI, scheduledCommandStack)
-
+    console.log('/////////////// ROCKETS ///////////////')
     // Load rockets
-    rockets?.forEach((rocket) => rocket.mountStack(stack))
+    rockets?.forEach((rocket) => {console.log(rocket);rocket.mountStack(stack);})
+    console.log('/////////////// DESPUES ///////////////')
   }
 
   private buildRootRESTAPI(stack: Stack): RestApi {
