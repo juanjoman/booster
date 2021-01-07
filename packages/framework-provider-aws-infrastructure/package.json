@@ -1,6 +1,6 @@
 {
   "name": "@boostercloud/framework-provider-aws-infrastructure",
-  "version": "0.9.3",
+  "version": "0.9.20",
   "description": "Handle the Booster deployment process to AWS",
   "keywords": [
     "framework-provider-aws-infrastructure"
@@ -25,6 +25,8 @@
     "@aws-cdk/aws-cloudfront": "1.67.0",
     "@aws-cdk/aws-cognito": "1.67.0",
     "@aws-cdk/aws-dynamodb": "1.67.0",
+    "@aws-cdk/aws-ec2": "1.67.0",
+    "@aws-cdk/aws-efs": "1.67.0",
     "@aws-cdk/aws-events-targets": "1.67.0",
     "@aws-cdk/aws-iam": "1.67.0",
     "@aws-cdk/aws-lambda": "1.67.0",

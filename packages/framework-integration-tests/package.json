@@ -10,14 +10,21 @@
   },
   "bugs": "https://github.com/boostercloud/booster/issues",
   "dependencies": {
+    "@boostercloud/cli": "0.9.3",
     "@boostercloud/framework-core": "^0.9.3",
     "@boostercloud/framework-provider-aws": "^0.9.3",
     "@boostercloud/framework-provider-local": "^0.9.3",
     "@boostercloud/framework-types": "^0.9.3",
-    "tslib": "^2.0.3"
+    "child-process-promise": "^2.2.1",
+    "fs": "^0.0.1-security",
+    "request": "2.88.2",
+    "tar": "6.1.0",
+    "tslib": "^2.0.3",
+    "yarn": "1.22.10",
+    "rimraf": "3.0.2"
   },
   "devDependencies": {
-    "@boostercloud/framework-provider-aws-infrastructure": "^0.9.3",
+    "@boostercloud/framework-provider-aws-infrastructure": "^0.9.20",
     "@boostercloud/framework-provider-local-infrastructure": "^0.9.3",
     "@types/aws-lambda": "^8.10.48",
     "@types/faker": "^4.1.12",
