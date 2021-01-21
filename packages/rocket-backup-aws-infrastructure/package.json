@@ -1,0 +1,53 @@
+{
+  "name": "@boostercloud/rocket-backup-aws-infrastructure",
+  "version": "0.9.4",
+  "description": "Booster rocket to backup event stores on your current Booster applications.",
+  "keywords": [
+    "Booster",
+    "plugin",
+    "aws",
+    "backup"
+  ],
+  "author": "Booster Cloud",
+  "homepage": "https://booster.cloud",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boostercloud/booster.git"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-dynamodb": "1.67.0",
+    "@aws-cdk/aws-backup": "1.67.0",
+    "@aws-cdk/aws-events": "1.67.0",
+    "@aws-cdk/core": "1.67.0",
+    "@boostercloud/framework-types": "^0.9.4"
+  },
+  "scripts": {
+    "lint:check": "eslint --ext '.js,.ts' **/*.ts",
+    "lint:fix": "eslint --quiet --fix --ext '.js,.ts' **/*.ts",
+    "compile": "tsc -b tsconfig.json",
+    "clean": "rimraf ./dist tsconfig.tsbuildinfo",
+    "prepack": "tsc -b tsconfig.json",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
+  },
+  "bugs": {
+    "url": "https://github.com/boostercloud/booster/issues"
+  },
+  "devDependencies": {
+    "@boostercloud/framework-provider-aws-infrastructure": "^0.9.4",
+    "@types/faker": "5.1.5",
+    "chai": "4.2.0",
+    "chai-as-promised": "7.1.1",
+    "faker": "5.1.0",
+    "sinon": "9.2.3",
+    "sinon-chai": "3.5.0",
+    "velocityjs": "^2.0.0"
+  }
+}

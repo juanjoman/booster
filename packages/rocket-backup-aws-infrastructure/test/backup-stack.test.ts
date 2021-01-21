@@ -1,0 +1,55 @@
+import { BoosterConfig } from '@boostercloud/framework-types'
+import { App, Stack, StackProps } from '@aws-cdk/core'
+import { restore, stub } from 'sinon'
+import { BackupStack, BackupType } from '../src/backup-stack'
+import { Table } from '@aws-cdk/aws-dynamodb'
+import * as PointInTimeRecoveryUtils from '../src/utils/point-in-time-recovery'
+import * as OnDemandUtils from '../src/utils/on-demand'
+import { generateDynamoDBTable } from './utils/resource-generator'
+import { expect } from './expect'
+
+describe('Backup stack', () => {
+  const config = new BoosterConfig('test')
+  config.appName = 'testing-app'
+  const appStack = new Stack(new App(), config.resourceNames.applicationStack, {} as StackProps)
+
+  before(() => {
+    Array.from(Array(3)).map((_, i) => {
+      generateDynamoDBTable(appStack, `myTable-${i}`, `tableName-${i}`)
+    })
+  })
+
+  afterEach(() => {
+    restore()
+  })
+
+  context('when BackupType is ON_DEMAND', () => {
+    it('calls applyOnDemandBackup method', () => {
+      const params = { backupType: BackupType.ON_DEMAND }
+      const onDemandBackupStub = stub(OnDemandUtils, 'applyOnDemandBackup').returns(undefined)
+      BackupStack.mountStack(params, appStack)
+
+      expect(onDemandBackupStub).to.have.been.calledThrice
+      Array.from(Array(3)).map((_, i) => {
+        expect(onDemandBackupStub).to.be.calledWithExactly(
+          appStack,
+          params,
+          appStack.node.tryFindChild(`myTable-${i}`) as Table
+        )
+      })
+    })
+  })
+
+  context('when BackupType is POINT_IN_TIME', () => {
+    it('calls applyPointInTimeRecoveryBackup', () => {
+      const params = { backupType: BackupType.POINT_IN_TIME }
+      const pointIntimeBackupStub = stub(PointInTimeRecoveryUtils, 'applyPointInTimeRecoveryBackup').returns(undefined)
+      BackupStack.mountStack(params, appStack)
+
+      expect(pointIntimeBackupStub).to.have.been.calledThrice
+      Array.from(Array(3)).map((_, i) => {
+        expect(pointIntimeBackupStub).to.be.calledWithExactly(appStack.node.tryFindChild(`myTable-${i}`) as Table)
+      })
+    })
+  })
+})
