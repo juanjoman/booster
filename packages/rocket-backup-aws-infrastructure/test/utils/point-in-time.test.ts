@@ -13,11 +13,11 @@ describe('Point in time recovery utils', () => {
     const table = generateDynamoDBTable(appStack)
 
     // 'pointInTimeRecovery: false' does not set pointInTimeRecoverySpecification
-    expect(table.node['host'].table._cfnProperties.pointInTimeRecoverySpecification).to.be.undefined
+    expect(table.node['host'].table.pointInTimeRecoverySpecification).to.be.undefined
 
     applyPointInTimeRecoveryBackup(table)
 
-    expect(table.node['host'].table._cfnProperties.pointInTimeRecoverySpecification).to.not.be.undefined
-    expect(table.node['host'].table._cfnProperties.pointInTimeRecoverySpecification.pointInTimeRecoveryEnabled).true
+    expect(table.node['host'].table.pointInTimeRecoverySpecification).to.not.be.undefined
+    expect(table.node['host'].table.pointInTimeRecoverySpecification.pointInTimeRecoveryEnabled).true
   })
 })
