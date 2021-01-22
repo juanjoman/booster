@@ -12,14 +12,20 @@ describe('On demand utils', () => {
   const config = new BoosterConfig('test')
   config.appName = 'testing-app'
   let appStack: Stack
-  let table: Table
+  let tables: Array<Table>
+  let backupResources: Array<BackupResource>
   const backUpPlanID = 'BackupPlan'
   const backupSelectionID = 'BackupSelection'
 
   beforeEach(() => {
     restore()
     appStack = new Stack(new App(), config.resourceNames.applicationStack, {} as StackProps)
-    table = generateDynamoDBTable(appStack)
+    tables = Array.from(Array(3)).map((_, i) => {
+      return generateDynamoDBTable(appStack, `myTable-${i}`, `tableName-${i}`)
+    })
+    backupResources = tables.map((table: Table) => {
+      return BackupResource.fromDynamoDbTable(table)
+    }) as Array<BackupResource>
   })
 
   it('creates a backup plan when no rules have been provided through the onDemandBackupRules parameter', () => {
@@ -29,11 +35,11 @@ describe('On demand utils', () => {
     // Spying on this method separately because dailyMonthly1YearRetention already triggers "BackupPlan.addRule(...)" twice
     const backupPlanAddRuleSpy = spy(OnDemandUtils, 'addAdditionalRules')
 
-    OnDemandUtils.applyOnDemandBackup(appStack, params, table)
+    OnDemandUtils.applyOnDemandBackup(appStack, params, tables)
 
     expect(backupPlanSpy).to.have.been.calledOnceWithExactly(appStack, backUpPlanID)
     expect(backupPlanAddSelectionSpy).to.have.been.calledOnceWithExactly(backupSelectionID, {
-      resources: [BackupResource.fromDynamoDbTable(table)],
+      resources: backupResources,
     })
     expect(backupPlanAddRuleSpy).to.not.have.been.called
   })
@@ -56,11 +62,11 @@ describe('On demand utils', () => {
     // Spying on this method separately because dailyMonthly1YearRetention already triggers "BackupPlan.addRule(...)" twice
     const backupPlanAddRuleSpy = spy(OnDemandUtils, 'addAdditionalRules')
 
-    OnDemandUtils.applyOnDemandBackup(appStack, params, table)
+    OnDemandUtils.applyOnDemandBackup(appStack, params, tables)
 
     expect(backupPlanSpy).to.have.been.calledOnceWithExactly(appStack, backUpPlanID)
     expect(backupPlanAddSelectionSpy).to.have.been.calledOnceWithExactly(backupSelectionID, {
-      resources: [BackupResource.fromDynamoDbTable(table)],
+      resources: backupResources,
     })
     expect(backupPlanAddRuleSpy).to.have.been.calledOnceWithExactly(backupPlanSpy.returnValues[0], onDemandBackupRules)
   })

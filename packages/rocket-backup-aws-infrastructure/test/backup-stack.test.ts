@@ -12,10 +12,11 @@ describe('Backup stack', () => {
   const config = new BoosterConfig('test')
   config.appName = 'testing-app'
   const appStack = new Stack(new App(), config.resourceNames.applicationStack, {} as StackProps)
+  let tables: Array<Table>
 
   before(() => {
-    Array.from(Array(3)).map((_, i) => {
-      generateDynamoDBTable(appStack, `myTable-${i}`, `tableName-${i}`)
+    tables = Array.from(Array(3)).map((_, i) => {
+      return generateDynamoDBTable(appStack, `myTable-${i}`, `tableName-${i}`)
     })
   })
 
@@ -29,14 +30,7 @@ describe('Backup stack', () => {
       const onDemandBackupStub = stub(OnDemandUtils, 'applyOnDemandBackup').returns(undefined)
       BackupStack.mountStack(params, appStack)
 
-      expect(onDemandBackupStub).to.have.been.calledThrice
-      Array.from(Array(3)).map((_, i) => {
-        expect(onDemandBackupStub).to.be.calledWithExactly(
-          appStack,
-          params,
-          appStack.node.tryFindChild(`myTable-${i}`) as Table
-        )
-      })
+      expect(onDemandBackupStub).to.have.been.calledOnceWithExactly(appStack, params, tables)
     })
   })
 
@@ -44,12 +38,10 @@ describe('Backup stack', () => {
     it('calls applyPointInTimeRecoveryBackup', () => {
       const params = { backupType: BackupType.POINT_IN_TIME }
       const pointIntimeBackupStub = stub(PointInTimeRecoveryUtils, 'applyPointInTimeRecoveryBackup').returns(undefined)
+
       BackupStack.mountStack(params, appStack)
 
-      expect(pointIntimeBackupStub).to.have.been.calledThrice
-      Array.from(Array(3)).map((_, i) => {
-        expect(pointIntimeBackupStub).to.be.calledWithExactly(appStack.node.tryFindChild(`myTable-${i}`) as Table)
-      })
+      expect(pointIntimeBackupStub).to.have.been.calledOnceWithExactly(tables)
     })
   })
 })

@@ -27,12 +27,12 @@ export enum BackupType {
 export class BackupStack {
   public static mountStack(params: BackupStackParams, stack: Stack): void {
     if (BackupType[params.backupType]) {
-      const eventStores = stack.node.children.filter((c: IConstruct) => c instanceof Table) as Array<Table>
-      eventStores.map((table: Table) =>
-        params.backupType === BackupType.ON_DEMAND
-          ? applyOnDemandBackup(stack, params, table)
-          : applyPointInTimeRecoveryBackup(table)
-      )
+      const tables = stack.node.children.filter((c: IConstruct) => c instanceof Table) as Array<Table>
+      if (params.backupType === BackupType.ON_DEMAND) {
+        applyOnDemandBackup(stack, params, tables)
+      } else {
+        applyPointInTimeRecoveryBackup(tables)
+      }
     } else {
       throw Error(
         '[Rocket][Backup] - backupType parameter is missing or is not supported. The available backup types are ON_DEMAND and POINT_IN_TIME'

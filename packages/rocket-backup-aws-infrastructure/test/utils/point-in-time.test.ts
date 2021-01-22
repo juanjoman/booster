@@ -1,5 +1,6 @@
 import { BoosterConfig } from '@boostercloud/framework-types'
 import { App, Stack, StackProps } from '@aws-cdk/core'
+import { Table } from '@aws-cdk/aws-dynamodb'
 import { applyPointInTimeRecoveryBackup } from '../../src/utils/point-in-time-recovery'
 import { expect } from '../expect'
 import { generateDynamoDBTable } from './resource-generator'
@@ -10,14 +11,20 @@ describe('Point in time recovery utils', () => {
   const appStack = new Stack(new App(), config.resourceNames.applicationStack, {} as StackProps)
 
   it('sets the pointInTimeRecoverySpecification parameter to true', () => {
-    const table = generateDynamoDBTable(appStack)
+    const tables = Array.from(Array(3)).map((_, i) => {
+      return generateDynamoDBTable(appStack, `myTable-${i}`, `tableName-${i}`)
+    })
 
-    // 'pointInTimeRecovery: false' does not set pointInTimeRecoverySpecification
-    expect(table.node['host'].table.pointInTimeRecoverySpecification).to.be.undefined
+    tables.map((table: Table) => {
+      // 'pointInTimeRecovery: false' does not set pointInTimeRecoverySpecification
+      expect(table.node['host'].table.pointInTimeRecoverySpecification).to.be.undefined
+    })
 
-    applyPointInTimeRecoveryBackup(table)
+    applyPointInTimeRecoveryBackup(tables)
 
-    expect(table.node['host'].table.pointInTimeRecoverySpecification).to.not.be.undefined
-    expect(table.node['host'].table.pointInTimeRecoverySpecification.pointInTimeRecoveryEnabled).true
+    tables.map((table: Table) => {
+      expect(table.node['host'].table.pointInTimeRecoverySpecification).to.not.be.undefined
+      expect(table.node['host'].table.pointInTimeRecoverySpecification.pointInTimeRecoveryEnabled).true
+    })
   })
 })
