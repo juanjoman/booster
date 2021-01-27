@@ -1,12 +1,13 @@
 import { BoosterConfig } from '@boostercloud/framework-types'
 import { App, Stack, StackProps } from '@aws-cdk/core'
 import { restore, stub } from 'sinon'
-import { BackupStack, BackupType } from '../src/backup-stack'
+import { BackupStack } from '../src/backup-stack'
 import { Table } from '@aws-cdk/aws-dynamodb'
 import * as PointInTimeRecoveryUtils from '../src/utils/point-in-time-recovery'
 import * as OnDemandUtils from '../src/utils/on-demand'
 import { generateDynamoDBTable } from './utils/resource-generator'
 import { expect } from './expect'
+import { BackupType } from '../src/utils/types'
 
 describe('Backup stack', () => {
   const config = new BoosterConfig('test')
@@ -30,7 +31,7 @@ describe('Backup stack', () => {
       const onDemandBackupStub = stub(OnDemandUtils, 'applyOnDemandBackup').returns(undefined)
       BackupStack.mountStack(params, appStack)
 
-      expect(onDemandBackupStub).to.have.been.calledOnceWithExactly(appStack, params, tables)
+      expect(onDemandBackupStub).to.have.been.calledOnceWithExactly(appStack, tables, params)
     })
   })
 
@@ -41,7 +42,7 @@ describe('Backup stack', () => {
 
       BackupStack.mountStack(params, appStack)
 
-      expect(pointIntimeBackupStub).to.have.been.calledOnceWithExactly(tables)
+      expect(pointIntimeBackupStub).to.have.been.calledOnceWithExactly(appStack, tables, params)
     })
   })
 })

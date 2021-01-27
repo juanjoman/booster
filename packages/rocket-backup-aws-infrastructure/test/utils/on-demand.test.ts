@@ -3,7 +3,7 @@ import { App, Stack, StackProps } from '@aws-cdk/core'
 import { BackupPlan, BackupResource } from '@aws-cdk/aws-backup'
 import { Table } from '@aws-cdk/aws-dynamodb'
 import * as OnDemandUtils from '../../src/utils/on-demand'
-import { BackupType } from '../../src/backup-stack'
+import { BackupType } from '../../src/utils/types'
 import { generateDynamoDBTable } from './resource-generator'
 import { spy, restore } from 'sinon'
 import { expect } from '../expect'
@@ -33,9 +33,9 @@ describe('On demand utils', () => {
     const backupPlanSpy = spy(BackupPlan, 'dailyMonthly1YearRetention')
     const backupPlanAddSelectionSpy = spy(BackupPlan.prototype, 'addSelection')
     // Spying on this method separately because dailyMonthly1YearRetention already triggers "BackupPlan.addRule(...)" twice
-    const backupPlanAddRuleSpy = spy(OnDemandUtils, 'addAdditionalRules')
+    const backupPlanAddRuleSpy = spy(OnDemandUtils, 'addScheduleRule')
 
-    OnDemandUtils.applyOnDemandBackup(appStack, params, tables)
+    OnDemandUtils.applyOnDemandBackup(appStack, tables, params)
 
     expect(backupPlanSpy).to.have.been.calledOnceWithExactly(appStack, backUpPlanID)
     expect(backupPlanAddSelectionSpy).to.have.been.calledOnceWithExactly(backupSelectionID, {
@@ -60,9 +60,9 @@ describe('On demand utils', () => {
     const backupPlanSpy = spy(BackupPlan, 'dailyMonthly1YearRetention')
     const backupPlanAddSelectionSpy = spy(BackupPlan.prototype, 'addSelection')
     // Spying on this method separately because dailyMonthly1YearRetention already triggers "BackupPlan.addRule(...)" twice
-    const backupPlanAddRuleSpy = spy(OnDemandUtils, 'addAdditionalRules')
+    const backupPlanAddRuleSpy = spy(OnDemandUtils, 'addScheduleRule')
 
-    OnDemandUtils.applyOnDemandBackup(appStack, params, tables)
+    OnDemandUtils.applyOnDemandBackup(appStack, tables, params)
 
     expect(backupPlanSpy).to.have.been.calledOnceWithExactly(appStack, backUpPlanID)
     expect(backupPlanAddSelectionSpy).to.have.been.calledOnceWithExactly(backupSelectionID, {

@@ -1,10 +1,10 @@
 import { Stack } from '@aws-cdk/core'
 import { Table } from '@aws-cdk/aws-dynamodb'
 import { BackupPlan, BackupResource, BackupPlanRule } from '@aws-cdk/aws-backup'
-import { Schedule } from '@aws-cdk/aws-events'
-import { BackupStackParams, OnDemandBackupRules } from '../backup-stack'
+import { Schedule, CronOptions } from '@aws-cdk/aws-events'
+import { BackupStackParams } from '../backup-stack'
 
-export const applyOnDemandBackup = (stack: Stack, params: BackupStackParams, tables: Array<Table>): void => {
+export const applyOnDemandBackup = (stack: Stack, tables: Array<Table>, params: BackupStackParams): void => {
   // Modifiable on future versions. Other options available:
   // - daily35DayRetention
   // - dailyWeeklyMonthly5YearRetention
@@ -18,23 +18,16 @@ export const applyOnDemandBackup = (stack: Stack, params: BackupStackParams, tab
     resources: backupResources,
   })
 
-  if (params.onDemandBackupRules) {
-    addAdditionalRules(plan, params.onDemandBackupRules)
+  if (params.onDemandBackupOptions?.schedule) {
+    addScheduleRule(plan, params.onDemandBackupOptions.schedule)
   }
 }
 
 // Exported for testing
-export const addAdditionalRules = (plan: BackupPlan, rulesParams: OnDemandBackupRules): void => {
+export const addScheduleRule = (plan: BackupPlan, schedule: CronOptions): void => {
   plan.addRule(
     new BackupPlanRule({
-      scheduleExpression: Schedule.cron({
-        minute: rulesParams.minute,
-        hour: rulesParams.hour,
-        day: rulesParams.day,
-        month: rulesParams.month,
-        weekDay: rulesParams.weekDay,
-        year: rulesParams.year,
-      }),
+      scheduleExpression: Schedule.cron(schedule),
     })
   )
 }
